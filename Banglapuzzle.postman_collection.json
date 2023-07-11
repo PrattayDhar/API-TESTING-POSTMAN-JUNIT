@@ -1,0 +1,527 @@
+{
+	"info": {
+		"_postman_id": "ebe5c75d-11c5-49e5-af6c-ba51102cd329",
+		"name": "Banglapuzzle",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27409332",
+		"_collection_link": "https://planetary-flare-433168.postman.co/workspace/SDET~8e365a41-54b5-4180-a823-5c3abd15ca85/collection/27409332-ebe5c75d-11c5-49e5-af6c-ba51102cd329?action=share&creator=27409332&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "User Log In Unuccessfull For Wrong Email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"Login Unsuccessfully\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    var errorMessages = jsonData.error;\r",
+									"    console.log(errorMessages);\r",
+									"    \r",
+									"    pm.expect(errorMessages).to.include(\"The email must be a valid email address.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"email\": \"test.user@gmail.co\", \r\n\"password\":\"12345678910\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Log In Successfull",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response =pm.response.json();\r",
+									"pm.collectionVariables.set(\"token\",pm.response.json().data.token);\r",
+									"\r",
+									"pm.test(\"Status code is 200\",function(){\r",
+									"    pm.response.to.have.status(200);\r",
+									"})\r",
+									"pm.test(\"Login successfully\",()=>{\r",
+									"    var jsonData= pm.response.json();\r",
+									"    var actual_message= jsonData.type;\r",
+									"    console.log(actual_message)\r",
+									"    pm.expect(actual_message).contains(\"success\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\"email\": \"test.user@gmail.com\", \r\n\"password\":\"12345678\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User View Product",
+			"item": [
+				{
+					"name": "User View Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All Product Showing With Pagination\",()=>{\r",
+									"    var jsonData= pm.response.json();\r",
+									"    var actual_message= \"products\";\r",
+									"    console.log(actual_message)\r",
+									"    pm.expect(jsonData.products).to.exist\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/product/view_product?page=1&per_page=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"view_product"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "per_page",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User View Specific  Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"One Product showing to User\",()=>{\r",
+									"    var jsonData= pm.response.json();\r",
+									"    var actual_message=\"products\";\r",
+									"    pm.expect(jsonData.products).to.exist\r",
+									"  \r",
+									"})\r",
+									"pm.test(\"Image Showing\",()=>{\r",
+									"    var jsonData=pm.response.json();\r",
+									"  var actual_message= \"image\";\r",
+									"    pm.expect(jsonData.products.image).to.exist;\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/product/view_single_product/15",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product",
+								"view_single_product",
+								"15"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Add Cart",
+			"item": [
+				{
+					"name": "Add Cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var response = pm.response.json();\r",
+									"\r",
+									"if (response && response.products && response.products.id) {\r",
+									"    var productId = response.products.id;\r",
+									"    pm.collectionVariables.set(\"productId\", productId);\r",
+									"} else {\r",
+									"    console.error(\"Failed to extract product ID from the response.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"pm.test(\"Product Added Into Cart\",()=>{\r",
+									"    var jsonData= pm.response.json();\r",
+									"    var actual_message= jsonData.message;\r",
+									"    console.log(actual_message)\r",
+									"    pm.expect(actual_message).contains(\"Product added to Cart\")\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var prefix=\"3\";\r",
+									"var randomNumber=_.random(10,99)\r",
+									"var product_id=prefix+randomNumber;\r",
+									"\r",
+									"pm.collectionVariables.set(\"product_id\",product_id)"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "product_id",
+								"value": "{{product_id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": \"{{product_id}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cart/add_cart",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart",
+								"add_cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Cart Same Product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product Already Added to Cart\",()=>{\r",
+									"    var jsonData= pm.response.json();\r",
+									"    var actual_message= jsonData.message;\r",
+									"    console.log(actual_message)\r",
+									"    pm.expect(actual_message).contains(\"Product Already Added to Cart\")\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": \"19\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cart/add_cart",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart",
+								"add_cart"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Viewcart",
+			"item": [
+				{
+					"name": "Verify last added product in the cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function() {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Verify last added product in the cart\", function() {\r",
+									"    var addedProductId = pm.collectionVariables.get(\"product_id\");\r",
+									"    var response = pm.response.json();\r",
+									"\r",
+									"    pm.expect(response.cart).to.exist;\r",
+									"\r",
+									"    var cartItems = response.cart;\r",
+									"    var lastAddedProduct = cartItems[cartItems.length - 1];\r",
+									"  \r",
+									"    pm.expect(lastAddedProduct.product_id).to.equal(addedProductId);\r",
+									"  \r",
+									" \r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "product_id",
+								"value": "{{product_id}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cart/view_cart",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"cart",
+								"view_cart"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://test.ludocorner.xyz/api",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMzViOWMzOGI3NzMyODA4NzMzOTM4ODU3MGI3YzM1Yzg5NTQxZWI3YjdkMjdjODNhNDE0NDU1OGZmN2VmNzcwMmVjNTE5OTk5NzgzY2M4ODciLCJpYXQiOjE2ODY4NjUwODEuNzM4MTc3LCJuYmYiOjE2ODY4NjUwODEuNzM4MTgxLCJleHAiOjE3MTg0ODc0ODEuNzM2NDI1LCJzdWIiOiIxIiwic2NvcGVzIjpbXX0.ueZ_ePZTpsZ144CqKgg03_hiRzM_UdG_AzecTsrEO3x1KYRLkgI9oWd-0Q70nuC-rwQf6ob_EvWAHsAiQPzwnPiicqEn67_rGavU0uqdq_mqyr393dROYpJHqL8ii8DvkC3bl3EcTwZb-1_H-EgcK8sqhCVrjOrri6STCPvf80q0sfgo2b1g6Mf8xNi_o1Yls63yZ7xhw9Xo9nxgAnDdCrrcT-CZ61EUKRxDcdxr14DfYXCmTyERD4c9eDl_lnMqyDIaEHGZ2FkmUM8rGxWXmJDjKjX5J95-l2K3FY8Du3mafqAVhYy4maJkUNBpoRbk65zU-h-6Icpw4mUmb1HP1--C0RbpV9eStT_jt0J4nbfqSUzDGCIr8PLz2Hm74NZNID2nyxbQhZbnNeROHr8cLYmXKKGQhlA1vj1CsHW1NgZecX7F28xhgsV8cvvPaE7ILGw6vTEJico1RUmRxoBPd77gxhHnhtL9fpX4Km1PcGQyqugueNrR4pehu2mSjHXmu1HOc1Veg3qfDnoX_2uKDGPg9Nd14_ZgpqhfYLlNz-OVelkupLfSvK1CD72QenM7jl3LKx5Le44cfcSBzLL6en22RcTyR5J97X22nLUs048S9nfY5HJitSJj5NqYsyMuLwGOItaWAaFt4VerKqWQ37G6vcUz3PIpKq21pHoeJJU"
+		},
+		{
+			"key": "product_id",
+			"value": "313"
+		}
+	]
+}
